@@ -8,6 +8,7 @@ Each fix has its own README in `Source/Fixes/` with detailed description.
 | Fix | Type | Description |
 |---|---|---|
 | WorkTable_Passability | XML | Pawns can no longer walk through crafting tables |
+| HayBed_Component | XML | HayBed uses ComponentMedieval instead of ComponentIndustrial |
 
 ## Structure / Структура
 

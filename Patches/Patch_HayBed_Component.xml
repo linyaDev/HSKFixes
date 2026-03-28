@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+
+	<!-- Fix: HayBed (настил) inherits ComponentIndustrial from BasicBedBase -->
+	<!-- A primitive bed made of hay and sticks should use ComponentMedieval, not ComponentIndustrial -->
+	<Operation Class="PatchOperationReplace">
+		<xpath>Defs/ThingDef[defName="HayBed"]/costList</xpath>
+		<value>
+			<costList>
+				<ComponentMedieval>4</ComponentMedieval>
+				<Hay>20</Hay>
+			</costList>
+		</value>
+	</Operation>
+
+	<Operation Class="PatchOperationReplace">
+		<xpath>Defs/ThingDef[defName="HayBedDouble"]/costList</xpath>
+		<value>
+			<costList>
+				<ComponentMedieval>6</ComponentMedieval>
+				<Hay>40</Hay>
+			</costList>
+		</value>
+	</Operation>
+
+</Patch>
