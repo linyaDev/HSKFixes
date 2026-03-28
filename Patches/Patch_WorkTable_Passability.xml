@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+
+	<!-- Fix: pawns walk through worktables (SK_WorkTable has PassThroughOnly) -->
+	<!-- Change to Impassable so pawns can't walk through crafting tables -->
+	<Operation Class="PatchOperationReplace">
+		<xpath>Defs/ThingDef[@Name="SK_WorkTable"]/passability</xpath>
+		<value>
+			<passability>Impassable</passability>
+		</value>
+	</Operation>
+
+</Patch>
