@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+
+	<!-- Fix: campfire missing fuel type selection tab -->
+	<!-- HSK replaces CompProperties_Refuelable with SK.CompFueled_Properties -->
+	<!-- but doesn't add SK.ITab_Fuel inspector tab -->
+	<Operation Class="PatchOperationAdd">
+		<xpath>Defs/ThingDef[defName="Campfire"]</xpath>
+		<value>
+			<inspectorTabs>
+				<li>SK.ITab_Fuel</li>
+				<li>ITab_Bills</li>
+			</inspectorTabs>
+		</value>
+	</Operation>
+
+</Patch>
