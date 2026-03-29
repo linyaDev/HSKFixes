@@ -5,8 +5,8 @@
 	<!-- Vanilla Armchair has passability=PassThroughOnly which blocks interaction spots -->
 	<!-- HSK Core_SK def sets Standable but AutoGenPatches doesn't include passability -->
 	<!-- so vanilla PassThroughOnly persists. Force Standable so armchairs can be placed at workbenches -->
-	<Operation Class="PatchOperationReplace">
-		<xpath>Defs/ThingDef[defName="Armchair"]/passability</xpath>
+	<Operation Class="PatchOperationAdd">
+		<xpath>Defs/ThingDef[defName="Armchair"]</xpath>
 		<value>
 			<passability>Standable</passability>
 		</value>
