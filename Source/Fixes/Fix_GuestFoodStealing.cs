@@ -5,15 +5,15 @@ using Verse;
 namespace HSKFixes
 {
     /// <summary>
-    /// Prevents guest/visitor caravan animals and pawns from eating player food.
+    /// Prevents guest/visitor caravan animals and pawns from eating food off the map.
     ///
-    /// FoodUtility.BestFoodSourceOnMap validates food items but has no faction check
-    /// for regular food (line 421). Nutrient Paste Dispensers DO have the check
-    /// (t.Faction != getter.Faction), but regular food items don't.
+    /// FoodUtility.BestFoodSourceOnMap has no faction check for regular food items.
+    /// Guest/visitor pawns and their animals can freely take any food from
+    /// stockpiles, ground, etc.
     ///
-    /// Fix: Harmony postfix on BestFoodSourceOnMap — if the getter is a guest
-    /// and the found food belongs to the player, return null (no food found).
-    /// Guest pawns will only eat food from their own inventory.
+    /// Fix: Harmony postfix on BestFoodSourceOnMap — if the getter belongs to
+    /// a non-player faction and is visiting (not a prisoner/slave), block food
+    /// from the map. Guests will only eat from their own caravan inventory.
     /// </summary>
     [StaticConstructorOnStartup]
     public static class Fix_GuestFoodStealing
@@ -35,11 +35,16 @@ namespace HSKFixes
         {
             if (__result == null) return;
 
-            // If getter is not from player faction and food belongs to player — deny
-            if (getter.Faction != null
-                && getter.Faction != Faction.OfPlayer
-                && getter.HostFaction != Faction.OfPlayer
-                && __result.Faction == Faction.OfPlayer)
+            // Allow player faction pawns to eat anything
+            if (getter.Faction == Faction.OfPlayer) return;
+
+            // Allow prisoners and slaves to eat (they are fed by the colony)
+            if (getter.guest != null && getter.guest.IsPrisoner) return;
+            if (getter.IsSlave) return;
+
+            // Block non-player, non-prisoner pawns from taking food off the map
+            // They should eat from their own caravan inventory
+            if (getter.Faction != null && getter.Faction != Faction.OfPlayer)
             {
                 __result = null;
             }
