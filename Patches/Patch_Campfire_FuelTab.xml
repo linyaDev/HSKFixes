@@ -9,7 +9,6 @@
 		<value>
 			<inspectorTabs>
 				<li>SK.ITab_Fuel</li>
-				<li>ITab_Bills</li>
 			</inspectorTabs>
 		</value>
 	</Operation>
