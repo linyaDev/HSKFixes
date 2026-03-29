@@ -10,6 +10,7 @@ Each fix has its own README in `Source/Fixes/` with detailed description.
 | WorkTable_Passability | XML | Pawns can no longer walk through crafting tables |
 | HayBed_Component | XML | HayBed uses ComponentMedieval instead of ComponentIndustrial |
 | Campfire_FuelTab | XML | Campfire fuel type selection tab (ITab_Fuel) |
+| GuestFoodStealing | DLL | Guest caravan animals no longer eat player food |
 
 ## Structure / Структура
 
