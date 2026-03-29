@@ -5,15 +5,14 @@ using Verse;
 namespace HSKFixes
 {
     /// <summary>
-    /// Prevents guest/visitor caravan animals and pawns from eating food off the map.
+    /// Prevents guest/visitor caravan animals from eating food in player's home area.
     ///
-    /// FoodUtility.BestFoodSourceOnMap has no faction check for regular food items.
-    /// Guest/visitor pawns and their animals can freely take any food from
-    /// stockpiles, ground, etc.
+    /// FoodUtility.BestFoodSourceOnMap has no faction/area check for regular food.
+    /// Guest pawns and their animals freely take food from player stockpiles.
     ///
-    /// Fix: Harmony postfix on BestFoodSourceOnMap — if the getter belongs to
-    /// a non-player faction and is visiting (not a prisoner/slave), block food
-    /// from the map. Guests will only eat from their own caravan inventory.
+    /// Fix: Harmony postfix on BestFoodSourceOnMap — if the getter is a non-player
+    /// guest and the found food is inside the player's home area, block it.
+    /// Guests can still eat food outside the home area (wild berries, etc).
     /// </summary>
     [StaticConstructorOnStartup]
     public static class Fix_GuestFoodStealing
@@ -35,16 +34,17 @@ namespace HSKFixes
         {
             if (__result == null) return;
 
-            // Allow player faction pawns to eat anything
+            // Allow player faction pawns
             if (getter.Faction == Faction.OfPlayer) return;
 
-            // Allow prisoners and slaves to eat (they are fed by the colony)
+            // Allow prisoners and slaves
             if (getter.guest != null && getter.guest.IsPrisoner) return;
             if (getter.IsSlave) return;
 
-            // Block non-player, non-prisoner pawns from taking food off the map
-            // They should eat from their own caravan inventory
-            if (getter.Faction != null && getter.Faction != Faction.OfPlayer)
+            // Block non-player pawns from eating food inside the home area
+            if (getter.Faction != null
+                && getter.Map != null
+                && getter.Map.areaManager.Home[__result.Position])
             {
                 __result = null;
             }
