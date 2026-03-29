@@ -6,7 +6,7 @@
 	<Operation Class="PatchOperationReplace">
 		<xpath>Defs/ThingDef[defName="HayBed"]/costList</xpath>
 		<value>
-			<costList>
+			<costList Inherit="false">
 				<ComponentMedieval>4</ComponentMedieval>
 				<Hay>20</Hay>
 			</costList>
@@ -16,7 +16,7 @@
 	<Operation Class="PatchOperationReplace">
 		<xpath>Defs/ThingDef[defName="HayBedDouble"]/costList</xpath>
 		<value>
-			<costList>
+			<costList Inherit="false">
 				<ComponentMedieval>6</ComponentMedieval>
 				<Hay>40</Hay>
 			</costList>
