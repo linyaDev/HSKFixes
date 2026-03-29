@@ -11,7 +11,7 @@
 		<value>
 			<li Class="CombatExtended.CompProperties_AmmoUser">
 				<magazineSize>1</magazineSize>
-				<reloadTime>0.5</reloadTime>
+				<reloadTime>0.1</reloadTime>
 				<ammoSet>AmmoSet_Arrow</ammoSet>
 			</li>
 		</value>
@@ -23,7 +23,7 @@
 		<value>
 			<li Class="CombatExtended.CompProperties_AmmoUser">
 				<magazineSize>1</magazineSize>
-				<reloadTime>0.5</reloadTime>
+				<reloadTime>0.1</reloadTime>
 				<ammoSet>AmmoSet_Arrow</ammoSet>
 			</li>
 		</value>
@@ -35,7 +35,7 @@
 		<value>
 			<li Class="CombatExtended.CompProperties_AmmoUser">
 				<magazineSize>1</magazineSize>
-				<reloadTime>0.5</reloadTime>
+				<reloadTime>0.1</reloadTime>
 				<ammoSet>AmmoSet_StreamlinedArrow</ammoSet>
 			</li>
 		</value>
