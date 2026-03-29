@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+
+	<!-- Fix: bows don't auto-switch arrow type when current type runs out -->
+	<!-- Without magazineSize, CE doesn't auto-switch ammo type -->
+	<!-- Set magazineSize=1 so CE reloads after each shot and can switch arrow type -->
+
+	<!-- Flat Bow -->
+	<Operation Class="PatchOperationReplace">
+		<xpath>Defs/ThingDef[defName="Bow_Short"]/comps/li[@Class="CombatExtended.CompProperties_AmmoUser"]</xpath>
+		<value>
+			<li Class="CombatExtended.CompProperties_AmmoUser">
+				<magazineSize>1</magazineSize>
+				<reloadTime>0.5</reloadTime>
+				<ammoSet>AmmoSet_Arrow</ammoSet>
+			</li>
+		</value>
+	</Operation>
+
+	<!-- Long Bow -->
+	<Operation Class="PatchOperationReplace">
+		<xpath>Defs/ThingDef[defName="Bow_Great"]/comps/li[@Class="CombatExtended.CompProperties_AmmoUser"]</xpath>
+		<value>
+			<li Class="CombatExtended.CompProperties_AmmoUser">
+				<magazineSize>1</magazineSize>
+				<reloadTime>0.5</reloadTime>
+				<ammoSet>AmmoSet_Arrow</ammoSet>
+			</li>
+		</value>
+	</Operation>
+
+	<!-- Recurve Bow -->
+	<Operation Class="PatchOperationReplace">
+		<xpath>Defs/ThingDef[defName="Bow_Recurve"]/comps/li[@Class="CombatExtended.CompProperties_AmmoUser"]</xpath>
+		<value>
+			<li Class="CombatExtended.CompProperties_AmmoUser">
+				<magazineSize>1</magazineSize>
+				<reloadTime>0.5</reloadTime>
+				<ammoSet>AmmoSet_StreamlinedArrow</ammoSet>
+			</li>
+		</value>
+	</Operation>
+
+</Patch>
