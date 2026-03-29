@@ -19,6 +19,11 @@ General fixes for Hardcore SK modpack. Not tied to any specific DLC.
 
 **RU:** Нельзя выбрать тип топлива у костра. HSK заменяет ванильный `CompProperties_Refuelable` на `SK.CompFueled_Properties`, но не добавляет вкладку `SK.ITab_Fuel`. Без неё игрок не может выбирать между углём, древесным углём, щепой, дровами и т.д.
 
+### AmmoTypeAlert (DLL)
+**EN:** When a pawn tries to shoot but has no ammo of the selected type (while having other types available), shows a message: "Pawn: no stone arrows for Long Bow. Switch ammo type." CE without magazine doesn't auto-switch ammo type — player needs to switch manually. This alert makes it obvious what's happening.
+
+**RU:** Когда пешка пытается стрелять, но у неё нет патронов выбранного типа (при наличии других типов), показывает сообщение. CE без магазина не переключает тип патронов автоматически — игроку нужно переключить вручную. Оповещение помогает понять что происходит.
+
 ### GuestFoodStealing (DLL)
 **EN:** Guest caravan animals eat player food from stockpiles. Vanilla `FoodUtility.BestFoodSourceOnMap` has no area check for regular food — guests freely take food from anywhere on the map. Fix blocks non-player pawns from taking food inside the player's home area. Guests can still eat wild berries and food outside the home area. Prisoners and slaves are not affected.
 
