@@ -17,8 +17,6 @@ namespace HSKFixes
     [StaticConstructorOnStartup]
     public static class Fix_AmmoTypeAlert
     {
-        private static HashSet<int> alreadyNotified = new HashSet<int>();
-
         static Fix_AmmoTypeAlert()
         {
             var harmony = new Harmony("linya.hskfixes.ammotypealert");
@@ -66,11 +64,7 @@ namespace HSKFixes
             if (!hasAmmo) return; // no ammo at all — CE already shows "out of ammo"
 
             // Has ammo but can't shoot = wrong ammo type selected
-            // Only notify once per pawn per type
             var currentAmmo = AccessTools.Property(ceAmmoType, "CurrentAmmo").GetValue(ammoComp);
-            int key = pawn.thingIDNumber ^ (currentAmmo?.GetHashCode() ?? 0);
-            if (alreadyNotified.Contains(key)) return;
-            alreadyNotified.Add(key);
 
             string pawnName = pawn.Name?.ToStringShort ?? pawn.LabelShort;
             string ammoName = currentAmmo != null ? ((Def)currentAmmo).label : "unknown";
