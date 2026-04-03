@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using HarmonyLib;
 using RimWorld;
 using UnityEngine;
@@ -6,13 +8,18 @@ using Verse;
 namespace HSKFixes
 {
     /// <summary>
-    /// Adds a "Preview item" button to the info card for any item with material selected.
-    /// Creates a temporary Thing with the selected stuff and opens its info card,
-    /// showing all stats correctly adjusted for the material.
+    /// Adds a "Preview item" button to the info card for any item that supports materials.
+    /// On click — opens a FloatMenu with material selection, then creates a temporary
+    /// Thing with chosen material and opens its detailed info card.
     /// </summary>
     [StaticConstructorOnStartup]
     public static class Fix_ToolPreviewButton
     {
+        // Button dimensions matching vanilla ShowMaterialsButton style
+        private const float ButtonWidth = 200f;
+        private const float ButtonHeight = 40f;
+        private const float Margin = 16f;
+
         static Fix_ToolPreviewButton()
         {
             var harmony = new Harmony("linya.hskfixes.toolpreviewbutton");
@@ -26,26 +33,46 @@ namespace HSKFixes
         {
             // Access private fields via publicizer
             var def = __instance.def;
-            var stuff = __instance.stuff;
 
-            // Only show when viewing a ThingDef with material selected
+            // Only show for ThingDefs that support materials
             if (def == null || !(def is ThingDef thingDef)) return;
-            if (stuff == null) return;
 
-            // Draw "Preview item" button to the left of "Change materials" button
+            var allowedStuffs = GenStuff.AllowedStuffsFor((BuildableDef)thingDef);
+            if (!allowedStuffs.Any()) return;
+
+            // Position: same row as "Change materials" button, to its left
+            // "Change materials" is at: x = right - 14 - 200 - 16
+            // Our button: left of it with 8px gap
+            float materialsButtonX = inRect.x + inRect.width - 14f - ButtonWidth - Margin;
+            float previewButtonX = materialsButtonX - ButtonWidth - 8f;
+
             Rect buttonRect = new Rect(
-                inRect.x + inRect.width - 260f,
-                inRect.y + inRect.height - 30f,
-                140f,
-                30f);
+                previewButtonX,
+                inRect.y + 18f,
+                ButtonWidth,
+                ButtonHeight);
 
-            if (Widgets.ButtonText(buttonRect, "Preview item"))
+            // Label: use Russian if active, otherwise English
+            string label = Translator.CanTranslate("HSKFixes_PreviewItem")
+                ? "HSKFixes_PreviewItem".Translate()
+                : "Preview item";
+
+            if (Widgets.ButtonText(buttonRect, label))
             {
-                // Create temporary Thing with selected stuff
-                Thing tempItem = ThingMaker.MakeThing(thingDef, stuff);
-
-                // Open info card for the temporary item — shows correct stuff-adjusted stats
-                Find.WindowStack.Add(new Dialog_InfoCard(tempItem));
+                // Open FloatMenu with material selection
+                List<FloatMenuOption> options = new List<FloatMenuOption>();
+                foreach (ThingDef stuffDef in allowedStuffs)
+                {
+                    ThingDef localStuff = stuffDef;
+                    options.Add(new FloatMenuOption(stuffDef.LabelCap, delegate
+                    {
+                        // Create temporary Thing with selected material
+                        Thing tempItem = ThingMaker.MakeThing(thingDef, localStuff);
+                        // Open info card for the temporary item
+                        Find.WindowStack.Add(new Dialog_InfoCard(tempItem));
+                    }, stuffDef));
+                }
+                Find.WindowStack.Add(new FloatMenu(options));
             }
         }
     }
