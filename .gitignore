@@ -3,3 +3,7 @@ Source/**/bin/
 *.user
 *.suo
 *.pdb
+
+# Publicizer build-time DLLs
+Assemblies/AsmResolver*.dll
+Assemblies/BepInEx*.dll
