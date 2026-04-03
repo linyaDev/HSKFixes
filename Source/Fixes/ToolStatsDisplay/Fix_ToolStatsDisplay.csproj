@@ -29,9 +29,12 @@
       <Private>false</Private>
     </Reference>
   </ItemGroup>
+  <PropertyGroup>
+    <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.3">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
   </ItemGroup>
