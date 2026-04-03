@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
 using RimWorld;
-using SurvivalToolsLite;
 using Verse;
 
 namespace HSKFixes
@@ -34,27 +33,68 @@ namespace HSKFixes
 
         public static void Postfix(ThingDef __instance, ref IEnumerable<StatDrawEntry> __result, StatRequest req)
         {
-            if (req.Thing != null) return;
-            if (req.StuffDef == null) return;
+            if (req.Thing != null) return; // real item — SurvivalToolsLite handles it correctly
+            if (req.StuffDef == null) return; // no stuff selected
 
-            var toolProps = __instance.GetModExtension<SurvivalToolProperties>();
-            if (toolProps?.baseWorkStatFactors == null) return;
+            // Check if this is a survival tool
+            var stToolPropsType = AccessTools.TypeByName("SurvivalToolsLite.SurvivalToolProperties");
+            if (stToolPropsType == null) return;
 
-            var stuffProps = req.StuffDef.GetModExtension<StuffPropsTool>();
-            if (stuffProps?.toolStatFactors == null || stuffProps.toolStatFactors.Count == 0) return;
+            var toolProps = __instance.GetModExtension<DefModExtension>();
+            bool isTool = false;
+            List<StatModifier> baseFactors = null;
 
+            foreach (var ext in __instance.modExtensions ?? new List<DefModExtension>())
+            {
+                if (stToolPropsType.IsInstanceOfType(ext))
+                {
+                    isTool = true;
+                    var field = AccessTools.Field(stToolPropsType, "baseWorkStatFactors");
+                    baseFactors = field?.GetValue(ext) as List<StatModifier>;
+                    break;
+                }
+            }
+
+            if (!isTool || baseFactors == null) return;
+
+            // Get stuff tool multipliers
+            var stuffPropsType = AccessTools.TypeByName("SurvivalToolsLite.StuffPropsTool");
+            if (stuffPropsType == null) return;
+
+            List<StatModifier> stuffFactors = null;
+            foreach (var ext in req.StuffDef.modExtensions ?? new List<DefModExtension>())
+            {
+                if (stuffPropsType.IsInstanceOfType(ext))
+                {
+                    var field = AccessTools.Field(stuffPropsType, "toolStatFactors");
+                    stuffFactors = field?.GetValue(ext) as List<StatModifier>;
+                    break;
+                }
+            }
+
+            if (stuffFactors == null || stuffFactors.Count == 0) return;
+
+            // Get the ST stat category for matching
+            var stCategoryType = AccessTools.TypeByName("SurvivalToolsLite.ST_StatCategoryDefOf");
+            if (stCategoryType == null) return;
+            var survToolCategory = AccessTools.Field(stCategoryType, "SurvivalTool")?.GetValue(null) as StatCategoryDef;
+            if (survToolCategory == null) return;
+
+            // Replace entries with stuff-adjusted values
             var resultList = __result.ToList();
             for (int i = 0; i < resultList.Count; i++)
             {
                 var entry = resultList[i];
-                if (entry.category != ST_StatCategoryDefOf.SurvivalTool) continue;
+                if (entry.category != survToolCategory) continue;
 
-                foreach (var baseFactor in toolProps.baseWorkStatFactors)
+                // Find matching base factor by label
+                foreach (var baseFactor in baseFactors)
                 {
                     if (entry.LabelCap == baseFactor.stat.LabelCap)
                     {
+                        // Find stuff multiplier for this stat
                         float stuffMult = 1f;
-                        foreach (var sf in stuffProps.toolStatFactors)
+                        foreach (var sf in stuffFactors)
                         {
                             if (sf.stat == baseFactor.stat)
                             {
@@ -67,7 +107,7 @@ namespace HSKFixes
                         {
                             float adjustedValue = baseFactor.value * stuffMult;
                             resultList[i] = new StatDrawEntry(
-                                ST_StatCategoryDefOf.SurvivalTool,
+                                survToolCategory,
                                 baseFactor.stat.LabelCap,
                                 adjustedValue.ToStringByStyle(ToStringStyle.PercentZero, ToStringNumberSense.Factor),
                                 baseFactor.stat.description,
