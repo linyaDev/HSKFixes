@@ -24,6 +24,16 @@ General fixes for Hardcore SK modpack. Not tied to any specific DLC.
 
 **RU:** Когда пешка пытается стрелять, но у неё нет патронов выбранного типа (при наличии других типов), показывает сообщение. CE без магазина не переключает тип патронов автоматически — игроку нужно переключить вручную. Оповещение помогает понять что происходит.
 
+### Armchair_Passability (XML)
+**EN:** Armchair blocks workbench interaction spot. Vanilla Armchair inherits `passability=PassThroughOnly` from parent def, which prevents placing it at workbench interaction cells. Added `passability=Standable` so armchairs can be placed at workbenches like other chairs.
+
+**RU:** Кресло блокирует точку взаимодействия верстака. Ванильное кресло наследует `passability=PassThroughOnly` от родительского дефа, что не даёт поставить его к верстаку. Добавлено `passability=Standable` чтобы кресла можно было ставить к верстакам как другие стулья.
+
+### ToolStatsDisplay (DLL)
+**EN:** Survival tool info window doesn't update stats when changing material. SurvivalToolsLite patches `ThingDef.SpecialDisplayStats` but only shows base values without applying `StuffPropsTool` multipliers. For example, hammer construction speed shows the same value for wood and steel. Fix multiplies base stats by stuff toolStatFactors so the info window correctly reflects material-dependent values.
+
+**RU:** Окно информации инструментов не обновляет характеристики при смене материала. SurvivalToolsLite показывает только базовые значения без учёта множителей материала (`StuffPropsTool`). Например, скорость строительства молотка одинаковая для дерева и стали. Фикс умножает базовые значения на множители материала, чтобы окно корректно отражало характеристики.
+
 ### GuestFoodStealing (DLL)
 **EN:** Guest caravan animals eat player food from stockpiles. Vanilla `FoodUtility.BestFoodSourceOnMap` has no area check for regular food — guests freely take food from anywhere on the map. Fix blocks non-player pawns from taking food inside the player's home area. Guests can still eat wild berries and food outside the home area. Prisoners and slaves are not affected.
 
