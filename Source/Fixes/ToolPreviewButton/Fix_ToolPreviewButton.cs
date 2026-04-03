@@ -8,14 +8,31 @@ using Verse;
 namespace HSKFixes
 {
     /// <summary>
-    /// Adds a "Preview item" button to the info card for any item that supports materials.
-    /// On click — opens a FloatMenu with material selection, then creates a temporary
-    /// Thing with chosen material and opens its detailed info card.
+    /// A Dialog_InfoCard subclass that allows multiple info cards open at once.
+    /// Vanilla Dialog_InfoCard has onlyOneOfTypeAllowed = true, which closes
+    /// the previous one when opening a new one.
+    /// </summary>
+    public class Dialog_InfoCard_Preview : Dialog_InfoCard
+    {
+        public Dialog_InfoCard_Preview(Thing thing) : base(thing)
+        {
+            // Allow multiple info card windows simultaneously
+            this.onlyOneOfTypeAllowed = false;
+            // Offset so it doesn't overlap the original window
+            this.windowRect.x += 50f;
+            this.windowRect.y += 50f;
+        }
+    }
+
+    /// <summary>
+    /// Adds a "Preview item" / "Готовый предмет" button to the info card
+    /// for any item that supports materials. On click — opens a FloatMenu
+    /// with material selection, then creates a temporary Thing with chosen
+    /// material and opens its detailed info card in a NEW window.
     /// </summary>
     [StaticConstructorOnStartup]
     public static class Fix_ToolPreviewButton
     {
-        // Button dimensions matching vanilla ShowMaterialsButton style
         private const float ButtonWidth = 200f;
         private const float ButtonHeight = 40f;
         private const float Margin = 16f;
@@ -31,18 +48,17 @@ namespace HSKFixes
 
         public static void Postfix(Dialog_InfoCard __instance, Rect inRect)
         {
-            // Access private fields via publicizer
+            // Don't draw button on our preview windows
+            if (__instance is Dialog_InfoCard_Preview) return;
+
             var def = __instance.def;
 
-            // Only show for ThingDefs that support materials
             if (def == null || !(def is ThingDef thingDef)) return;
 
             var allowedStuffs = GenStuff.AllowedStuffsFor((BuildableDef)thingDef);
             if (!allowedStuffs.Any()) return;
 
-            // Position: same row as "Change materials" button, to its left
-            // "Change materials" is at: x = right - 14 - 200 - 16
-            // Our button: left of it with 8px gap
+            // Position: left of "Change materials" button
             float materialsButtonX = inRect.x + inRect.width - 14f - ButtonWidth - Margin;
             float previewButtonX = materialsButtonX - ButtonWidth - 8f;
 
@@ -52,24 +68,21 @@ namespace HSKFixes
                 ButtonWidth,
                 ButtonHeight);
 
-            // Label: use Russian if active, otherwise English
             string label = Translator.CanTranslate("HSKFixes_PreviewItem")
                 ? "HSKFixes_PreviewItem".Translate()
                 : "Preview item";
 
             if (Widgets.ButtonText(buttonRect, label))
             {
-                // Open FloatMenu with material selection
                 List<FloatMenuOption> options = new List<FloatMenuOption>();
                 foreach (ThingDef stuffDef in allowedStuffs)
                 {
                     ThingDef localStuff = stuffDef;
                     options.Add(new FloatMenuOption(stuffDef.LabelCap, delegate
                     {
-                        // Create temporary Thing with selected material
                         Thing tempItem = ThingMaker.MakeThing(thingDef, localStuff);
-                        // Open info card for the temporary item
-                        Find.WindowStack.Add(new Dialog_InfoCard(tempItem));
+                        // Open as Dialog_InfoCard_Preview — doesn't close the original window
+                        Find.WindowStack.Add(new Dialog_InfoCard_Preview(tempItem));
                     }, stuffDef));
                 }
                 Find.WindowStack.Add(new FloatMenu(options));
