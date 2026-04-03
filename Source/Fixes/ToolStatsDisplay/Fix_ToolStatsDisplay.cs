@@ -32,9 +32,7 @@ namespace HSKFixes
                 AccessTools.Method(typeof(ThingDef), "SpecialDisplayStats"),
                 postfix: new HarmonyMethod(typeof(Fix_ToolStatsDisplay), nameof(Postfix)));
 
-            // Also apply attribute-based patches (Fix_ToolPreviewButton)
-            harmony.PatchAll();
-            Log.Message("[HSKFixes] Fix_ToolStatsDisplay + PreviewButton applied.");
+            Log.Message("[HSKFixes] Fix_ToolStatsDisplay applied.");
         }
 
         /// <summary>

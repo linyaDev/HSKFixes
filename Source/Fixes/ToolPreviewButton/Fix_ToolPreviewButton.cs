@@ -6,13 +6,22 @@ using Verse;
 namespace HSKFixes
 {
     /// <summary>
-    /// Adds a "Preview" button to the info card for any item with material selected.
+    /// Adds a "Preview item" button to the info card for any item with material selected.
     /// Creates a temporary Thing with the selected stuff and opens its info card,
     /// showing all stats correctly adjusted for the material.
     /// </summary>
-    [HarmonyPatch(typeof(Dialog_InfoCard), "DoWindowContents")]
+    [StaticConstructorOnStartup]
     public static class Fix_ToolPreviewButton
     {
+        static Fix_ToolPreviewButton()
+        {
+            var harmony = new Harmony("linya.hskfixes.toolpreviewbutton");
+            harmony.Patch(
+                AccessTools.Method(typeof(Dialog_InfoCard), "DoWindowContents"),
+                postfix: new HarmonyMethod(typeof(Fix_ToolPreviewButton), nameof(Postfix)));
+            Log.Message("[HSKFixes] Fix_ToolPreviewButton applied.");
+        }
+
         public static void Postfix(Dialog_InfoCard __instance, Rect inRect)
         {
             // Access private fields via publicizer
@@ -23,7 +32,7 @@ namespace HSKFixes
             if (def == null || !(def is ThingDef thingDef)) return;
             if (stuff == null) return;
 
-            // Draw "Preview" button to the left of "Change materials" button
+            // Draw "Preview item" button to the left of "Change materials" button
             Rect buttonRect = new Rect(
                 inRect.x + inRect.width - 260f,
                 inRect.y + inRect.height - 30f,
