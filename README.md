@@ -5,41 +5,41 @@ General fixes for Hardcore SK modpack. Not tied to any specific DLC.
 ## Fixes for 1.5 / Фиксы для 1.5
 
 ### AmmoTypeAlert (DLL)
-**EN:** When a pawn tries to shoot but has no ammo of the selected type (while having other types available), shows a message: "Pawn: no stone arrows for Long Bow. Switch ammo type." CE without magazine doesn't auto-switch ammo type — player needs to switch manually. This alert makes it obvious what's happening.
+**EN:** When a pawn can't shoot because selected ammo type is empty (while having other types), shows a message: "Pawn: no stone arrows for Long Bow. Switch ammo type."
 
-**RU:** Когда пешка пытается стрелять, но у неё нет патронов выбранного типа (при наличии других типов), показывает сообщение. CE без магазина не переключает тип патронов автоматически — игроку нужно переключить вручную. Оповещение помогает понять что происходит.
+**RU:** Когда пешка не может стрелять из-за отсутствия выбранного типа патронов (при наличии других), показывает сообщение для игрока.
 
 ### ToolStatsDisplay (DLL)
-**EN:** Survival tool info window doesn't update stats when changing material. SurvivalToolsLite patches `ThingDef.SpecialDisplayStats` but only shows base values without applying `StuffPropsTool` multipliers. Fix wraps the result IEnumerable with yield return to adjust SurvivalTool entries while preserving lazy enumeration chain for other mods.
+**EN:** Survival tool info window doesn't update stats when changing material. For example, hammer construction speed shows the same value for wood and steel. Fixed.
 
-**RU:** Окно информации инструментов не обновляет характеристики при смене материала. SurvivalToolsLite показывает только базовые значения без учёта множителей материала. Фикс оборачивает результат через yield return для корректировки записей инструментов, сохраняя lazy enumeration для других модов.
+**RU:** Окно информации инструментов не обновляет характеристики при смене материала. Например, скорость строительства молотка одинаковая для дерева и стали. Исправлено.
 
 ## Fixes for 1.6 / Фиксы для 1.6
 
 ### WorkTable_Passability (XML)
-**EN:** Pawns freely walk through crafting tables (carpenter bench, smithy, etc). HSK's `SK_WorkTable` has `passability=PassThroughOnly` but no `pathCost`. Added `pathCost=70` so pawns prefer to walk around. Vanilla tables also use `pathCost=70`.
+**EN:** Pawns freely walk through crafting tables. Added pathCost so pawns prefer to walk around.
 
-**RU:** Пешки свободно ходят через рабочие столы (стол плотника, кузница и т.д.). В HSK `SK_WorkTable` имеет `passability=PassThroughOnly` без `pathCost`. Добавлен `pathCost=70` чтобы пешки предпочитали обходить. В ванилле столы тоже имеют `pathCost=70`.
+**RU:** Пешки свободно ходят через рабочие столы. Добавлен штраф пути чтобы пешки предпочитали обходить.
 
 ### HayBed_Component (XML)
-**EN:** Hay bed (настил из дерева) requires industrial component instead of medieval. HSK's `BasicBedBase` adds `ComponentIndustrial` to `costList` which is inherited by all beds including primitive hay bed. Fixed to use `ComponentMedieval` with `Inherit="false"`.
+**EN:** Hay bed requires industrial component instead of primitive. Fixed to use medieval component.
 
-**RU:** Настил из дерева требует индустриальный компонент вместо примитивного. `BasicBedBase` в HSK добавляет `ComponentIndustrial` в `costList`, который наследуется всеми кроватями включая примитивный настил. Исправлено на `ComponentMedieval` с `Inherit="false"`.
+**RU:** Настил из дерева требует индустриальный компонент вместо примитивного. Исправлено.
 
 ### Campfire_FuelTab (XML)
-**EN:** Can't select fuel type at campfire. HSK replaces vanilla `CompProperties_Refuelable` with `SK.CompFueled_Properties` but doesn't add `SK.ITab_Fuel` inspector tab. Without it, players can't choose between charcoal, coal, kindling, wood, etc.
+**EN:** Can't select fuel type at campfire. Missing fuel selection tab. Fixed.
 
-**RU:** Нельзя выбрать тип топлива у костра. HSK заменяет ванильный `CompProperties_Refuelable` на `SK.CompFueled_Properties`, но не добавляет вкладку `SK.ITab_Fuel`. Без неё игрок не может выбирать между углём, древесным углём, щепой, дровами и т.д.
+**RU:** Нельзя выбрать тип топлива у костра. Отсутствует вкладка выбора топлива. Исправлено.
 
 ### Armchair_Passability (XML)
-**EN:** Armchair blocks workbench interaction spot. Vanilla Armchair inherits `passability=PassThroughOnly` from parent def, which prevents placing it at workbench interaction cells. Added `passability=Standable` so armchairs can be placed at workbenches like other chairs.
+**EN:** Armchair blocks workbench interaction spot. Can't place armchair at workbenches. Fixed.
 
-**RU:** Кресло блокирует точку взаимодействия верстака. Ванильное кресло наследует `passability=PassThroughOnly` от родительского дефа, что не даёт поставить его к верстаку. Добавлено `passability=Standable` чтобы кресла можно было ставить к верстакам как другие стулья.
+**RU:** Кресло блокирует точку взаимодействия верстака. Нельзя поставить кресло к верстаку. Исправлено.
 
 ### GuestFoodStealing (DLL)
-**EN:** Guest caravan animals eat player food from stockpiles. Vanilla `FoodUtility.BestFoodSourceOnMap` has no area check for regular food — guests freely take food from anywhere on the map. Fix blocks non-player pawns from taking food inside the player's home area. Guests can still eat wild berries and food outside the home area. Prisoners and slaves are not affected.
+**EN:** Guest caravan animals eat player food from stockpiles. Fixed — guests can no longer take food from inside the home area. They can still eat wild food outside. Prisoners and slaves not affected.
 
-**RU:** Животные гостевых караванов едят еду игрока со складов. Ванильный `FoodUtility.BestFoodSourceOnMap` не проверяет зону для обычной еды — гости свободно берут еду откуда угодно. Фикс блокирует не-игровым пешкам доступ к еде внутри домашней зоны. Гости могут есть дикие ягоды и еду вне домашней зоны. Пленники и рабы не затронуты.
+**RU:** Животные гостевых караванов едят еду игрока со складов. Исправлено — гости не могут брать еду из домашней зоны. Дикую еду вне зоны могут есть. Пленники и рабы не затронуты.
 
 ## Requirements / Требования
 - RimWorld 1.5 / 1.6
