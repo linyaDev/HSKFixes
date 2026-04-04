@@ -16,6 +16,8 @@ General fixes for Hardcore SK modpack. Not tied to any specific DLC.
 
 ## Fixes for 1.6 / Фиксы для 1.6
 
+*Will be removed once fixed in the main HSK release / Будут удалены после исправления в основной версии HSK*
+
 ### WorkTable_Passability (XML)
 **EN:** Pawns freely walk through crafting tables. Added pathCost so pawns prefer to walk around.
 
